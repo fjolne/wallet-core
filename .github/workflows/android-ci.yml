@@ -32,13 +32,24 @@ jobs:
       run: |
         tools/install-dependencies
       if: steps.internal_cache.outputs.cache-hit != 'true'
-    - name: Run test
+    - name: Generate files
       run: |
         tools/generate-files
-        tools/android-test
-    - name: Build sample app
+        # tools/android-test
+    - name: Android build
       run: |
-        tools/samples-build android
-      env:
-        GITHUB_USER: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tools/android-build
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-build
+        path: |
+          build
+
+
+    # - name: Build sample app
+    #   run: |
+    #     tools/samples-build android
+    #   env:
+    #     GITHUB_USER: ${{ github.actor }}
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
